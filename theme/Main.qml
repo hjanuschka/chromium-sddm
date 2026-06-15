@@ -238,10 +238,35 @@ Rectangle {
                 hoverColor: "#0b57d0"
                 textColor: "#1f1f1f"
                 KeyNavigation.backtab: loginButton
-                KeyNavigation.tab: session
+                KeyNavigation.tab: password
                 Keys.onPressed: function(event) {
                     if (event.key === Qt.Key_Return || event.key === Qt.Key_Enter) {
                         password.focus = true
+                        event.accepted = true
+                    }
+                }
+            }
+
+            Item { width: 1; height: 6 }
+
+            Text { z: 1; text: "Password"; color: "#444746"; font.pixelSize: 12; font.bold: true }
+            PasswordBox {
+                id: password
+                z: 1
+                width: parent.width
+                height: 48
+                font.pixelSize: 16
+                radius: 8
+                color: "#ffffff"
+                borderColor: "#747775"
+                focusColor: "#0b57d0"
+                hoverColor: "#0b57d0"
+                textColor: "#1f1f1f"
+                KeyNavigation.backtab: name
+                KeyNavigation.tab: session
+                Keys.onPressed: function(event) {
+                    if (event.key === Qt.Key_Return || event.key === Qt.Key_Enter) {
+                        root.doLogin()
                         event.accepted = true
                     }
                 }
@@ -264,31 +289,8 @@ Rectangle {
                 focusColor: "#0b57d0"
                 hoverColor: "#0b57d0"
                 textColor: "#1f1f1f"
-                KeyNavigation.backtab: name
-                KeyNavigation.tab: password
-            }
-
-            Text { z: 1; text: "Password"; color: "#444746"; font.pixelSize: 12; font.bold: true }
-            PasswordBox {
-                id: password
-                z: 1
-                width: parent.width
-                height: 48
-                font.pixelSize: 16
-                radius: 8
-                color: "#ffffff"
-                borderColor: "#747775"
-                focusColor: "#0b57d0"
-                hoverColor: "#0b57d0"
-                textColor: "#1f1f1f"
-                KeyNavigation.backtab: session
+                KeyNavigation.backtab: password
                 KeyNavigation.tab: loginButton
-                Keys.onPressed: function(event) {
-                    if (event.key === Qt.Key_Return || event.key === Qt.Key_Enter) {
-                        root.doLogin()
-                        event.accepted = true
-                    }
-                }
             }
 
             // Caps lock warning
