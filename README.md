@@ -7,6 +7,14 @@ full brightness.
 
 ![Screenshot](screenshot.png)
 
+## Demo
+
+Full dino run (runs the whole width and hops the cacti):
+
+https://github.com/hjanuschka/chromium-sddm/raw/master/dino_run.mp4
+
+<video src="https://github.com/hjanuschka/chromium-sddm/raw/master/dino_run.mp4" controls width="100%"></video>
+
 ## Features
 
 - Google "Sign in" card layout with rounded corners and entrance animation

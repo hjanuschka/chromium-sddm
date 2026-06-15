@@ -268,16 +268,6 @@ Rectangle {
                 KeyNavigation.tab: password
             }
 
-            Text {
-                width: parent.width
-                text: "Test matrix: XFCE X11 · GNOME/Mutter Wayland · Hyprland Wayland · KDE/KWin X11 · KDE/KWin Wayland"
-                color: "#747775"
-                font.pixelSize: 10
-                wrapMode: Text.WordWrap
-            }
-
-            Item { width: 1; height: 6 }
-
             Text { z: 1; text: "Password"; color: "#444746"; font.pixelSize: 12; font.bold: true }
             PasswordBox {
                 id: password
