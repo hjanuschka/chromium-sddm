@@ -1,0 +1,17 @@
+[SddmGreeterTheme]
+Name=Chromium Test
+Description=Maldives with prominent session selector below username
+Author=Ubuntu/Site-local
+Copyright=(c) SDDM contributors
+License=GPL
+Type=sddm-theme
+Version=0.1
+Website=
+Screenshot=
+MainScript=Main.qml
+ConfigFile=theme.conf
+TranslationsDirectory=translations
+Email=
+Theme-Id=chromium-test
+Theme-API=2.0
+QtVersion=6
