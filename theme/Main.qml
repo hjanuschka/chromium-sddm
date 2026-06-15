@@ -61,14 +61,18 @@ Rectangle {
         Text {
             id: timeText
             anchors.right: parent.right
-            color: "#1f1f1f"
+            color: "white"
+            style: Text.Outline
+            styleColor: "#80000000"
             font.pixelSize: 44
             font.weight: Font.Light
         }
         Text {
             id: dateText
             anchors.right: parent.right
-            color: "#444746"
+            color: "white"
+            style: Text.Outline
+            styleColor: "#80000000"
             font.pixelSize: 16
         }
     }
