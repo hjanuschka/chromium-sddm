@@ -445,7 +445,7 @@ Rectangle {
         anchors.left: parent.left
         anchors.leftMargin: 48
         anchors.right: parent.right
-        anchors.rightMargin: 360
+        anchors.rightMargin: 48
         anchors.bottom: parent.bottom
         anchors.bottomMargin: 64
         height: 54
@@ -482,6 +482,8 @@ Rectangle {
             x: 0
             anchors.bottom: ground.top
             anchors.bottomMargin: 0
+            transformOrigin: Item.Bottom
+            scale: 1.18
 
             property int frame: 0
             property var body: [
