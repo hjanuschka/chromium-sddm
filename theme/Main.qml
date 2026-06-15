@@ -416,21 +416,75 @@ Rectangle {
         }
     }
 
-    // ---- Footer with dino easter egg ----
-    Row {
+    // ---- Footer text ----
+    Column {
         anchors.left: parent.left
         anchors.bottom: parent.bottom
         anchors.leftMargin: 48
-        anchors.bottomMargin: 24
-        spacing: 14
+        anchors.bottomMargin: 18
+        spacing: 2
+        Text {
+            text: "Chromium Touch Test"
+            color: "white"
+            style: Text.Outline
+            styleColor: "#80000000"
+            font.pixelSize: 13
+        }
+        Text {
+            text: "No internet required to sign in"
+            color: "white"
+            style: Text.Outline
+            styleColor: "#80000000"
+            font.pixelSize: 11
+        }
+    }
+
+    // ---- Dino runner (game demo) across the bottom ----
+    Item {
+        id: dinoGame
+        anchors.left: parent.left
+        anchors.leftMargin: 48
+        anchors.right: parent.right
+        anchors.rightMargin: 360
+        anchors.bottom: parent.bottom
+        anchors.bottomMargin: 64
+        height: 54
+
+        property bool jumping: dinoJump.running
+        property var cacti: [ width * 0.30, width * 0.55, width * 0.80 ]
+
+        Rectangle {
+            id: ground
+            anchors.left: parent.left
+            anchors.right: parent.right
+            anchors.bottom: parent.bottom
+            height: 2
+            color: "#e8eaed"
+        }
+
+        Repeater {
+            model: dinoGame.cacti
+            Item {
+                width: 12
+                height: 24
+                x: modelData
+                anchors.bottom: ground.top
+                Rectangle { color: "#e8eaed"; width: 4; height: 24; anchors.bottom: parent.bottom; anchors.horizontalCenter: parent.horizontalCenter }
+                Rectangle { color: "#e8eaed"; width: 3; height: 9; anchors.bottom: parent.bottom; anchors.bottomMargin: 8; x: 1 }
+                Rectangle { color: "#e8eaed"; width: 3; height: 9; anchors.bottom: parent.bottom; anchors.bottomMargin: 5; x: 8 }
+            }
+        }
 
         Canvas {
             id: dino
             width: 44
             height: 48
-            anchors.bottom: parent.bottom
+            x: 0
+            anchors.bottom: ground.top
+            anchors.bottomMargin: 0
 
-            property var sprite: [
+            property int frame: 0
+            property var body: [
                 "..........###########",
                 ".........############",
                 ".........##.#########",
@@ -448,23 +502,58 @@ Rectangle {
                 ".#############.......",
                 "..###########........",
                 "...##########........",
-                "....########.........",
-                ".....###.###.........",
-                ".....##...##.........",
-                ".....#.....#.........",
-                ".....##....##........"
+                "....########........."
+            ]
+            property var legs: [
+                [ ".....###.###.........",
+                  ".....##...##.........",
+                  ".....##....#.........",
+                  "....##.....#........." ],
+                [ ".....###.###.........",
+                  ".....##...##.........",
+                  ".....#....##.........",
+                  ".....#.....##........" ],
+                [ ".....###.###.........",
+                  ".....##...##.........",
+                  ".....#.....#.........",
+                  ".....#.....#........." ]
             ]
 
             onPaint: {
                 var ctx = getContext("2d")
                 ctx.reset()
-                ctx.fillStyle = "#5f6368"
+                ctx.fillStyle = "#f1f3f4"
                 var px = 2
-                for (var y = 0; y < sprite.length; y++) {
-                    var row = sprite[y]
+                var rows = body.concat(legs[frame])
+                for (var y = 0; y < rows.length; y++) {
+                    var row = rows[y]
                     for (var x = 0; x < row.length; x++) {
                         if (row.charAt(x) === "#")
                             ctx.fillRect(x * px, y * px + 4, px, px)
+                    }
+                }
+            }
+            onFrameChanged: requestPaint()
+
+            Timer {
+                interval: 110
+                running: true
+                repeat: true
+                onTriggered: {
+                    if (!dinoGame.jumping)
+                        dino.frame = dino.frame === 0 ? 1 : 0
+                }
+            }
+
+            onXChanged: {
+                if (dinoJump.running)
+                    return
+                var front = x + 28
+                for (var i = 0; i < dinoGame.cacti.length; i++) {
+                    var d = dinoGame.cacti[i] - front
+                    if (d > 2 && d < 20) {
+                        dinoJump.restart()
+                        break
                     }
                 }
             }
@@ -474,26 +563,20 @@ Rectangle {
                 cursorShape: Qt.PointingHandCursor
                 onClicked: dinoJump.restart()
             }
+
             SequentialAnimation {
                 id: dinoJump
-                NumberAnimation { target: dino; property: "anchors.bottomMargin"; to: 36; duration: 200; easing.type: Easing.OutQuad }
-                NumberAnimation { target: dino; property: "anchors.bottomMargin"; to: 0; duration: 220; easing.type: Easing.InQuad }
+                ScriptAction { script: dino.frame = 2 }
+                NumberAnimation { target: dino; property: "anchors.bottomMargin"; to: 40; duration: 240; easing.type: Easing.OutQuad }
+                NumberAnimation { target: dino; property: "anchors.bottomMargin"; to: 0; duration: 260; easing.type: Easing.InQuad }
             }
-        }
 
-        Column {
-            anchors.bottom: parent.bottom
-            anchors.bottomMargin: 4
-            spacing: 2
-            Text {
-                text: "Chromium Touch Test"
-                color: "#444746"
-                font.pixelSize: 13
-            }
-            Text {
-                text: "No internet required to sign in"
-                color: "#747775"
-                font.pixelSize: 11
+            NumberAnimation on x {
+                from: 0
+                to: dinoGame.width - 44
+                duration: 11000
+                loops: Animation.Infinite
+                running: true
             }
         }
     }
@@ -509,13 +592,15 @@ Rectangle {
             width: restartText.implicitWidth + 32
             height: 36
             radius: 18
-            color: restartMouse.pressed ? "#dde3ea"
-                 : restartMouse.containsMouse ? "#e9eef6" : "transparent"
+            color: restartMouse.pressed ? "#40ffffff"
+                 : restartMouse.containsMouse ? "#26ffffff" : "transparent"
             Text {
                 id: restartText
                 anchors.centerIn: parent
                 text: textConstants.reboot
-                color: "#0b57d0"
+                color: "white"
+                style: Text.Outline
+                styleColor: "#80000000"
                 font.pixelSize: 14
                 font.bold: true
             }
@@ -532,13 +617,15 @@ Rectangle {
             width: shutdownText.implicitWidth + 32
             height: 36
             radius: 18
-            color: shutdownMouse.pressed ? "#dde3ea"
-                 : shutdownMouse.containsMouse ? "#e9eef6" : "transparent"
+            color: shutdownMouse.pressed ? "#40ffffff"
+                 : shutdownMouse.containsMouse ? "#26ffffff" : "transparent"
             Text {
                 id: shutdownText
                 anchors.centerIn: parent
                 text: textConstants.shutdown
-                color: "#0b57d0"
+                color: "white"
+                style: Text.Outline
+                styleColor: "#80000000"
                 font.pixelSize: 14
                 font.bold: true
             }
